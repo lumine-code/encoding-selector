@@ -14,7 +14,7 @@ To install `encoding-selector` search for _encoding-selector_ in the Install pan
 
 ## Commands
 
-Commands available in `atom-text-editor`:
+Commands available in `atom-workspace`:
 
 - `encoding-selector:show`: open the encoding picker for the current editor.
 
