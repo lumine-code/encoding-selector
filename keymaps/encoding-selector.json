@@ -1,5 +1,7 @@
 {
-  "atom-text-editor": {
+  // :not([mini]) because it changes the file's encoding, and a mini editor has
+  // no file of its own to change.
+  "atom-text-editor:not([mini])": {
     "ctrl-shift-u": "encoding-selector:show"
   }
 }
