@@ -13,8 +13,14 @@
   "context-menu": {
     "atom-text-editor:not([mini])": [
       {
+        "type": "separator"
+      },
+      {
         "label": "Change Encoding",
         "command": "encoding-selector:show"
+      },
+      {
+        "type": "separator"
       }
     ]
   }
