@@ -5,21 +5,21 @@ describe("EncodingSelector", () => {
   let editor;
 
   beforeEach(async () => {
-    jasmine.attachToDOM(atom.views.getView(atom.workspace));
+    jasmine.attachToDOM(lumine.views.getView(lumine.workspace));
 
-    await atom.packages.activatePackage("status-bar");
-    await atom.packages.activatePackage("encoding-selector");
-    editor = await atom.workspace.open(path.join(__dirname, "fixtures", "sample.js"));
+    await lumine.packages.activatePackage("status-bar");
+    await lumine.packages.activatePackage("encoding-selector");
+    editor = await lumine.workspace.open(path.join(__dirname, "fixtures", "sample.js"));
   });
 
   afterEach(async () => {
-    await atom.packages.deactivatePackage("encoding-selector");
+    await lumine.packages.deactivatePackage("encoding-selector");
   });
 
   describe("when encoding-selector:show is triggered", () => {
     it("displays a list of all the available encodings", async () => {
-      atom.commands.dispatch(editor.getElement(), "encoding-selector:show");
-      await atom.views.getNextUpdatePromise();
+      lumine.commands.dispatch(editor.getElement(), "encoding-selector:show");
+      await lumine.views.getNextUpdatePromise();
 
       expect(document.body.querySelectorAll(".encoding-selector li").length).toBeGreaterThan(1);
     });
@@ -27,10 +27,10 @@ describe("EncodingSelector", () => {
 
   describe("when an encoding is selected", () => {
     it("sets the new encoding on the editor", async () => {
-      atom.commands.dispatch(editor.getElement(), "encoding-selector:show");
-      await atom.views.getNextUpdatePromise();
+      lumine.commands.dispatch(editor.getElement(), "encoding-selector:show");
+      await lumine.views.getNextUpdatePromise();
 
-      const encodingListView = atom.workspace.getModalPanels()[0].getItem();
+      const encodingListView = lumine.workspace.getModalPanels()[0].getItem();
       encodingListView.props.didConfirmSelection({ id: "utf16le" });
       expect(editor.getEncoding()).toBe("utf16le");
     });
@@ -44,10 +44,10 @@ describe("EncodingSelector", () => {
       editor.setEncoding("utf16le");
       expect(encodingChangeHandler.callCount).toBe(1);
 
-      atom.commands.dispatch(editor.getElement(), "encoding-selector:show");
-      await atom.views.getNextUpdatePromise();
+      lumine.commands.dispatch(editor.getElement(), "encoding-selector:show");
+      await lumine.views.getNextUpdatePromise();
 
-      const encodingListView = atom.workspace.getModalPanels()[0].getItem();
+      const encodingListView = lumine.workspace.getModalPanels()[0].getItem();
       encodingListView.props.didConfirmSelection({ id: "detect" });
       await new Promise((resolve) => {
         encodingChangeHandler.andCallFake(() => {
@@ -66,7 +66,7 @@ describe("EncodingSelector", () => {
 
       // Wait for status bar service hook to fire
       while (!encodingStatus || !encodingStatus.textContent) {
-        await atom.views.getNextUpdatePromise();
+        await lumine.views.getNextUpdatePromise();
         encodingStatus = document.querySelector(".encoding-status");
       }
     });
@@ -78,7 +78,7 @@ describe("EncodingSelector", () => {
     it("hides the label when the current encoding is null", async () => {
       spyOn(editor, "getEncoding").andReturn(null);
       editor.setEncoding("utf16le");
-      await atom.views.getNextUpdatePromise();
+      await lumine.views.getNextUpdatePromise();
       expect(encodingStatus.offsetHeight).toBe(0);
     });
 
@@ -86,7 +86,7 @@ describe("EncodingSelector", () => {
       it("displays the new encoding of the editor", async () => {
         expect(encodingStatus.querySelector("a").textContent).toBe("UTF-8");
         editor.setEncoding("utf16le");
-        await atom.views.getNextUpdatePromise();
+        await lumine.views.getNextUpdatePromise();
         expect(encodingStatus.querySelector("a").textContent).toBe("UTF-16 LE");
       });
     });
@@ -94,7 +94,7 @@ describe("EncodingSelector", () => {
     describe("when clicked", () => {
       it("toggles the encoding-selector:show event", () => {
         const eventHandler = jasmine.createSpy("eventHandler");
-        atom.commands.add("atom-text-editor", "encoding-selector:show", eventHandler);
+        lumine.commands.add("lumine-text-editor", "encoding-selector:show", eventHandler);
         encodingStatus.click();
         expect(eventHandler).toHaveBeenCalled();
       });
@@ -102,16 +102,16 @@ describe("EncodingSelector", () => {
 
     describe("when the package is deactivated", () => {
       it("removes the view", async () => {
-        await atom.packages.deactivatePackage("encoding-selector");
+        await lumine.packages.deactivatePackage("encoding-selector");
         expect(encodingStatus.parentElement).toBeNull();
       });
 
       it("cancels a pending label update", async () => {
         const updateSubscription = jasmine.createSpyObj("update subscription", ["dispose"]);
-        spyOn(atom.views, "updateDocument").andReturn(updateSubscription);
+        spyOn(lumine.views, "updateDocument").andReturn(updateSubscription);
 
         editor.setEncoding("utf16le");
-        await atom.packages.deactivatePackage("encoding-selector");
+        await lumine.packages.deactivatePackage("encoding-selector");
 
         expect(updateSubscription.dispose).toHaveBeenCalled();
       });
