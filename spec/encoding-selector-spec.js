@@ -1,4 +1,3 @@
-// const {it, fit, ffit, beforeEach, afterEach} = require('./async-spec-helpers') // eslint-disable-line
 const path = require("path");
 
 describe("EncodingSelector", () => {
@@ -42,7 +41,7 @@ describe("EncodingSelector", () => {
       editor.onDidChangeEncoding(encodingChangeHandler);
 
       editor.setEncoding("utf16le");
-      expect(encodingChangeHandler.callCount).toBe(1);
+      expect(encodingChangeHandler.calls.count()).toBe(1);
 
       lumine.commands.dispatch(editor.getElement(), "encoding-selector:show");
       await lumine.views.getNextUpdatePromise();
@@ -50,7 +49,7 @@ describe("EncodingSelector", () => {
       const encodingListView = lumine.workspace.getModalPanels()[0].getItem();
       encodingListView.props.didConfirmSelection({ id: "detect" });
       await new Promise((resolve) => {
-        encodingChangeHandler.andCallFake(() => {
+        encodingChangeHandler.and.callFake(() => {
           expect(editor.getEncoding()).toBe("utf8");
           resolve();
         });
@@ -76,7 +75,7 @@ describe("EncodingSelector", () => {
     });
 
     it("hides the label when the current encoding is null", async () => {
-      spyOn(editor, "getEncoding").andReturn(null);
+      spyOn(editor, "getEncoding").and.returnValue(null);
       editor.setEncoding("utf16le");
       await lumine.views.getNextUpdatePromise();
       expect(encodingStatus.offsetHeight).toBe(0);
@@ -108,7 +107,7 @@ describe("EncodingSelector", () => {
 
       it("cancels a pending label update", async () => {
         const updateSubscription = jasmine.createSpyObj("update subscription", ["dispose"]);
-        spyOn(lumine.views, "updateDocument").andReturn(updateSubscription);
+        spyOn(lumine.views, "updateDocument").and.returnValue(updateSubscription);
 
         editor.setEncoding("utf16le");
         await lumine.packages.deactivatePackage("encoding-selector");
