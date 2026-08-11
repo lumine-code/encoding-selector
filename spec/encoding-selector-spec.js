@@ -71,7 +71,7 @@ describe("EncodingSelector", () => {
     });
 
     it("displays the name of the current encoding", () => {
-      expect(encodingStatus.querySelector("a").textContent).toBe("UTF-8");
+      expect(encodingStatus.textContent).toBe("UTF-8");
     });
 
     it("hides the label when the current encoding is null", async () => {
@@ -83,10 +83,10 @@ describe("EncodingSelector", () => {
 
     describe("when the editor's encoding changes", () => {
       it("displays the new encoding of the editor", async () => {
-        expect(encodingStatus.querySelector("a").textContent).toBe("UTF-8");
+        expect(encodingStatus.textContent).toBe("UTF-8");
         editor.setEncoding("utf16le");
         await lumine.views.getNextUpdatePromise();
-        expect(encodingStatus.querySelector("a").textContent).toBe("UTF-16 LE");
+        expect(encodingStatus.textContent).toBe("UTF-16 LE");
       });
     });
 
