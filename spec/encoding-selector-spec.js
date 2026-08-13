@@ -92,8 +92,10 @@ describe("EncodingSelector", () => {
 
     describe("when clicked", () => {
       it("toggles the encoding-selector:show event", () => {
+        // The tile dispatches at the workspace: a notebook's file editor has
+        // no element in the DOM, and the handler resolves the editor itself.
         const eventHandler = jasmine.createSpy("eventHandler");
-        lumine.commands.add("lumine-text-editor", "encoding-selector:show", eventHandler);
+        lumine.commands.add("lumine-workspace", "encoding-selector:show", eventHandler);
         encodingStatus.click();
         expect(eventHandler).toHaveBeenCalled();
       });
