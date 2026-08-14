@@ -10,7 +10,7 @@ Pick the character encoding used for the current editor.
 
 ## Installation
 
-To install `encoding-selector` search for _encoding-selector_ in the Install pane of the Lumine settings or run `lumine --install lumine-code/encoding-selector`.
+To install `encoding-selector` search for it in the Install pane of the Lumine settings, or run the command `lumine --install lumine-code/encoding-selector`.
 
 ## Commands
 
@@ -20,7 +20,7 @@ Commands available in `lumine-workspace`:
 
 ## Services
 
-- **status-bar** (`^1.0.0`): consumed to show the active encoding in the status bar.
+- `status-bar`: consumed to show the active encoding in the status bar.
 
 ## Contributing
 
