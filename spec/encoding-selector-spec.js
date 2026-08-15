@@ -22,6 +22,32 @@ describe("EncodingSelector", () => {
 
       expect(document.body.querySelectorAll(".encoding-selector li").length).toBeGreaterThan(1);
     });
+
+    it("puts the file's encoding under Auto Detect and rules the rest off", async () => {
+      editor.setEncoding("utf16le");
+      lumine.commands.dispatch(editor.getElement(), "encoding-selector:show");
+      await lumine.views.getNextUpdatePromise();
+
+      const view = lumine.workspace.getModalPanels()[0].getItem();
+      expect(view.items[0].id).toBe("detect");
+      expect(view.items[1].id).toBe("utf16le");
+
+      const separator = view.element.querySelector(".select-list-separator");
+      expect(separator.previousElementSibling.dataset.encoding).toBe("utf16le");
+      expect(separator.nextElementSibling.dataset.encoding).toBe(view.items[2].id);
+    });
+
+    it("drops the rule once a query ranks the rows instead", async () => {
+      editor.setEncoding("utf16le");
+      lumine.commands.dispatch(editor.getElement(), "encoding-selector:show");
+      await lumine.views.getNextUpdatePromise();
+
+      const view = lumine.workspace.getModalPanels()[0].getItem();
+      view.refs.queryEditor.setText("utf");
+      await lumine.views.getNextUpdatePromise();
+
+      expect(view.element.querySelector(".select-list-separator")).toBeNull();
+    });
   });
 
   describe("when an encoding is selected", () => {

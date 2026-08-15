@@ -5,6 +5,7 @@ Pick the character encoding used for the current editor.
 ## Features
 
 - **Encoding picker**: choose the encoding for the active editor from a searchable list.
+- **Current encoding first**: the file's own encoding sits under Auto Detect, ruled off from the rest.
 - **Auto-detection**: detects the likely encoding of the current file.
 - **Status bar tile**: shows the active encoding and opens the picker when clicked.
 
