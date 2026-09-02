@@ -43,7 +43,7 @@ describe("EncodingSelector", () => {
       await lumine.views.getNextUpdatePromise();
 
       const view = lumine.workspace.getModalPanels()[0].getItem();
-      view.refs.queryEditor.setText("utf");
+      view.getQueryEditor().setText("utf");
       await lumine.views.getNextUpdatePromise();
 
       expect(view.element.querySelector(".select-list-separator")).toBeNull();
