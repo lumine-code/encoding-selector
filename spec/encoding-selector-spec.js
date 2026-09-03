@@ -29,12 +29,13 @@ describe("EncodingSelector", () => {
       await lumine.views.getNextUpdatePromise();
 
       const view = lumine.workspace.getModalPanels()[0].getItem();
-      expect(view.items[0].id).toBe("detect");
-      expect(view.items[1].id).toBe("utf16le");
+      const displayedItems = view.getDisplayedItems();
+      expect(displayedItems[0].id).toBe("detect");
+      expect(displayedItems[1].id).toBe("utf16le");
 
-      const separator = view.element.querySelector(".select-list-separator");
+      const separator = view.getElement().querySelector(".select-list-separator");
       expect(separator.previousElementSibling.dataset.encoding).toBe("utf16le");
-      expect(separator.nextElementSibling.dataset.encoding).toBe(view.items[2].id);
+      expect(separator.nextElementSibling.dataset.encoding).toBe(displayedItems[2].id);
     });
 
     it("drops the rule once a query ranks the rows instead", async () => {
@@ -46,7 +47,7 @@ describe("EncodingSelector", () => {
       view.getQueryEditor().setText("utf");
       await lumine.views.getNextUpdatePromise();
 
-      expect(view.element.querySelector(".select-list-separator")).toBeNull();
+      expect(view.getElement().querySelector(".select-list-separator")).toBeNull();
     });
   });
 
@@ -56,7 +57,8 @@ describe("EncodingSelector", () => {
       await lumine.views.getNextUpdatePromise();
 
       const encodingListView = lumine.workspace.getModalPanels()[0].getItem();
-      encodingListView.props.didConfirmSelection({ id: "utf16le" });
+      await encodingListView.selectItemById("utf16le");
+      await encodingListView.confirmSelection();
       expect(editor.getEncoding()).toBe("utf16le");
     });
   });
@@ -73,7 +75,8 @@ describe("EncodingSelector", () => {
       await lumine.views.getNextUpdatePromise();
 
       const encodingListView = lumine.workspace.getModalPanels()[0].getItem();
-      encodingListView.props.didConfirmSelection({ id: "detect" });
+      await encodingListView.selectItemById("detect");
+      await encodingListView.confirmSelection();
       await new Promise((resolve) => {
         encodingChangeHandler.and.callFake(() => {
           expect(editor.getEncoding()).toBe("utf8");
