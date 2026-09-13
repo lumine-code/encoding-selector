@@ -8,6 +8,7 @@ Pick the character encoding used for the current editor.
 - **Current encoding first**: the file's own encoding sits under Auto Detect, ruled off from the rest.
 - **Auto-detection**: detects the likely encoding of the current file.
 - **Status bar tile**: shows the active encoding and opens the picker when clicked.
+- **Format-aware files**: keeps a fixed encoding visible but disables changing it when the file editor declares its encoding read-only.
 
 ## Installation
 
@@ -22,6 +23,8 @@ Commands available in `lumine-workspace`:
 ## Services
 
 - `status-bar`: consumed to show the active encoding in the status bar.
+
+File editors may implement `isEncodingReadOnly()` to keep their current encoding visible while preventing the picker from changing it. The command reports the fixed encoding instead of opening the picker.
 
 ## Contributing
 

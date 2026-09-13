@@ -49,6 +49,19 @@ describe("EncodingSelector", () => {
 
       expect(view.getElement().querySelector(".select-list-separator")).toBeNull();
     });
+
+    it("reports a format-owned encoding instead of opening the picker", async () => {
+      editor.isEncodingReadOnly = () => true;
+      spyOn(lumine.notifications, "addInfo");
+
+      lumine.commands.dispatch(editor.getElement(), "encoding-selector:show");
+      await lumine.views.getNextUpdatePromise();
+
+      expect(lumine.notifications.addInfo).toHaveBeenCalledWith(
+        "This file format requires UTF-8 encoding.",
+      );
+      expect(lumine.workspace.getModalPanels().length).toBe(0);
+    });
   });
 
   describe("when an encoding is selected", () => {
@@ -60,6 +73,19 @@ describe("EncodingSelector", () => {
       await encodingListView.selectItemById("utf16le");
       await encodingListView.confirmSelection();
       expect(editor.getEncoding()).toBe("utf16le");
+    });
+
+    it("applies the selection to the file that opened the picker", async () => {
+      lumine.commands.dispatch(editor.getElement(), "encoding-selector:show");
+      await lumine.views.getNextUpdatePromise();
+      const encodingListView = lumine.workspace.getModalPanels()[0].getItem();
+
+      const otherEditor = await lumine.workspace.open("");
+      await encodingListView.selectItemById("utf16le");
+      await encodingListView.confirmSelection();
+
+      expect(editor.getEncoding()).toBe("utf16le");
+      expect(otherEditor.getEncoding()).toBe("utf8");
     });
   });
 
@@ -101,6 +127,23 @@ describe("EncodingSelector", () => {
 
     it("displays the name of the current encoding", () => {
       expect(encodingStatus.textContent).toBe("UTF-8");
+    });
+
+    it("keeps a format-owned encoding visible but does not make it clickable", async () => {
+      editor.isEncodingReadOnly = () => true;
+      editor.setEncoding("utf16le");
+      editor.setEncoding("utf8");
+      await lumine.views.getNextUpdatePromise();
+
+      const eventHandler = jasmine.createSpy("eventHandler");
+      lumine.commands.add("lumine-workspace", "encoding-selector:show", eventHandler);
+      encodingStatus.click();
+
+      expect(encodingStatus.textContent).toBe("UTF-8");
+      expect(encodingStatus.getAttribute("aria-disabled")).toBe("true");
+      expect(encodingStatus.classList.contains("is-read-only")).toBe(true);
+      expect(eventHandler).not.toHaveBeenCalled();
+      expect(getTooltipText(encodingStatus)).toBe("This file format requires UTF-8 encoding.");
     });
 
     it("hides the label when the current encoding is null", async () => {
@@ -148,3 +191,8 @@ describe("EncodingSelector", () => {
     });
   });
 });
+
+function getTooltipText(element) {
+  const [tooltip] = lumine.tooltips.findTooltips(element);
+  return tooltip.getTitle();
+}
