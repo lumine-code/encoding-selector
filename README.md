@@ -5,8 +5,8 @@ Pick the character encoding used for the current editor.
 ## Features
 
 - **Encoding picker**: choose the encoding for the active editor from a searchable list.
-- **Current encoding first**: the file's own encoding sits under Auto Detect, ruled off from the rest.
-- **Auto-detection**: detects the likely encoding of the current file.
+- **Current encoding first**: when the list needs scrolling, the file's encoding sits under Auto Detect, ruled off from the rest; short lists keep their natural order.
+- **Auto-detection**: detects the likely encoding of the saved file, keeps the checkmark on Auto Detect and marks its result with an italic icon until an encoding is chosen manually.
 - **Status bar tile**: shows the active encoding and opens the picker when clicked.
 - **Format-aware files**: keeps a fixed encoding visible but disables changing it when the file editor declares its encoding read-only.
 
