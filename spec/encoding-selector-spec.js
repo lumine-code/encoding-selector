@@ -143,10 +143,12 @@ describe("EncodingSelector", () => {
     it("offers Auto in an unsaved file and restores the configured default without reading disk", async () => {
       editor = await lumine.workspace.open("");
       editor.setEncoding("utf16le");
+      const picker = await openPicker();
+      await picker.selectItemById("detect");
       const fs = require("fs");
       const read = spyOn(fs.promises, "readFile").and.callThrough();
-      await chooseAuto();
-      expect(read).not.toHaveBeenCalled();
+      await picker.confirmSelection();
+      expect(read).withContext(JSON.stringify(read.calls.allArgs())).not.toHaveBeenCalled();
       expect(editor.getEncoding()).toBe("utf8");
       const view = await openPicker();
       expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("detect");
