@@ -16,6 +16,20 @@ describe("EncodingSelector", () => {
   });
 
   describe("when encoding-selector:show is triggered", () => {
+    it("defaults to Auto Detect with the configured UTF-8 result", async () => {
+      lumine.commands.dispatch(editor.getElement(), "encoding-selector:show");
+      await conditionPromise(() =>
+        lumine.workspace.getModalPanels().some((panel) => panel.isVisible()),
+      );
+      const view = lumine.workspace
+        .getModalPanels()
+        .find((panel) => panel.isVisible())
+        .getItem();
+      expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("detect");
+      expect(view.getElement().querySelector("li.auto-selected").dataset.encoding).toBe("utf8");
+      expect(view.getSelectedItem().id).toBe("detect");
+    });
+
     it("displays a list of all the available encodings", async () => {
       lumine.commands.dispatch(editor.getElement(), "encoding-selector:show");
       await lumine.views.getNextUpdatePromise();
@@ -126,6 +140,84 @@ describe("EncodingSelector", () => {
       await view.confirmSelection();
     }
 
+    it("offers Auto in an unsaved file and restores the configured default without reading disk", async () => {
+      editor = await lumine.workspace.open("");
+      editor.setEncoding("utf16le");
+      const fs = require("fs");
+      const read = spyOn(fs.promises, "readFile").and.callThrough();
+      await chooseAuto();
+      expect(read).not.toHaveBeenCalled();
+      expect(editor.getEncoding()).toBe("utf8");
+      const view = await openPicker();
+      expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("detect");
+      expect(view.getElement().querySelector("li.auto-selected").dataset.encoding).toBe("utf8");
+    });
+
+    it("resolves implicit Auto through a changed global file encoding", async () => {
+      const previous = lumine.config.get("editor.fileEncoding");
+      try {
+        lumine.config.set("editor.fileEncoding", "utf16le");
+        editor = await lumine.workspace.open("");
+        expect(editor.getEncoding()).toBe("utf16le");
+        const view = await openPicker();
+        expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("detect");
+        expect(view.getElement().querySelector("li.auto-selected").dataset.encoding).toBe(
+          "utf16le",
+        );
+      } finally {
+        lumine.config.set("editor.fileEncoding", previous);
+      }
+    });
+
+    it("uses the grammar-scoped file encoding when restoring unsaved Auto", async () => {
+      editor = await lumine.workspace.open("");
+      const scopeSelector = "." + editor.getRootScopeDescriptor().getScopesArray()[0];
+      const options = { scopeSelector };
+      const previous = lumine.config.get("editor.fileEncoding", {
+        scope: editor.getRootScopeDescriptor(),
+      });
+      try {
+        lumine.config.set("editor.fileEncoding", "utf16le", options);
+        editor.setEncoding("utf8");
+        await chooseAuto();
+        expect(editor.getEncoding()).toBe("utf16le");
+        let view = await openPicker();
+        expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("detect");
+        expect(view.getElement().querySelector("li.auto-selected").dataset.encoding).toBe(
+          "utf16le",
+        );
+        lumine.workspace
+          .getModalPanels()
+          .find((panel) => panel.isVisible())
+          .hide();
+        lumine.config.set("editor.fileEncoding", "utf8", options);
+        view = await openPicker();
+        expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("detect");
+        expect(view.getElement().querySelector("li.auto-selected").dataset.encoding).toBe("utf8");
+      } finally {
+        lumine.config.set("editor.fileEncoding", previous, options);
+      }
+    });
+
+    it("restores an explicit manual choice equal to the configured default", async () => {
+      let view = await openPicker();
+      await view.selectItemById("utf8");
+      await view.confirmSelection();
+      const main = lumine.packages.getActivePackage("encoding-selector").mainModule;
+      const saved = main.serialize();
+      main.restoreState({});
+      view = await openPicker();
+      expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("detect");
+      lumine.workspace
+        .getModalPanels()
+        .find((panel) => panel.isVisible())
+        .hide();
+      main.restoreState(saved);
+      view = await openPicker();
+      expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("utf8");
+      expect(view.getElement().querySelector("li.auto-selected")).toBeNull();
+    });
+
     it("keeps the tick on Auto and marks its result separately above the separator", async () => {
       await chooseAuto();
       const view = await openPicker();
@@ -161,13 +253,16 @@ describe("EncodingSelector", () => {
       expect(view.getSelectedItem().id).toBe("utf8");
     });
 
-    it("keeps Auto choices separate for each buffer", async () => {
+    it("keeps manual choices separate while other buffers default to Auto", async () => {
       await chooseAuto();
+      let view = await openPicker();
+      await view.selectItemById("utf8");
+      await view.confirmSelection();
       const firstEditor = editor;
       editor = await lumine.workspace.open(path.join(__dirname, "fixtures", "other.js"));
-      let view = await openPicker();
-      expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("utf8");
-      expect(view.getElement().querySelector("li.auto-selected")).toBeNull();
+      view = await openPicker();
+      expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("detect");
+      expect(view.getElement().querySelector("li.auto-selected").dataset.encoding).toBe("utf8");
       lumine.workspace
         .getModalPanels()
         .find((panel) => panel.isVisible())
@@ -175,7 +270,7 @@ describe("EncodingSelector", () => {
       editor = firstEditor;
       await lumine.workspace.open(firstEditor);
       view = await openPicker();
-      expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("detect");
+      expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("utf8");
     });
 
     it("restores the automatic choice from serialized package state", async () => {
@@ -246,7 +341,9 @@ describe("EncodingSelector", () => {
       await chooseAuto();
       const main = lumine.packages.getActivePackage("encoding-selector").mainModule;
       const saved = main.serialize();
-      main.restoreState({});
+      main.restoreState({
+        manualEncodings: [{ bufferId: editor.getBuffer().getId(), encoding: "utf8" }],
+      });
       let view = await openPicker();
       expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("utf8");
       lumine.workspace
