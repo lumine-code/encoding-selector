@@ -2,6 +2,8 @@
 
 Pick the character encoding used for the current editor.
 
+Fork of [pulsar-edit/pulsar](https://github.com/pulsar-edit/pulsar) (`packages/encoding-selector`).
+
 ## Features
 
 - **Encoding picker**: choose the encoding for the active editor from a searchable list.
