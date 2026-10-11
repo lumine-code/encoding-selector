@@ -22,6 +22,8 @@ Commands available in `lumine-workspace`:
 
 - `encoding-selector:show`: open the encoding picker for the current editor.
 
+The picker keeps the editor it opened for and closes when that editor is destroyed.
+
 ## Services
 
 - `status-bar`: consumed to show the active encoding in the status bar.
