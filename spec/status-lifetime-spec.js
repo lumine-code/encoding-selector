@@ -1,3 +1,4 @@
+const windowService = require("./helpers/window-service");
 describe("Encoding selector status lifetime", () => {
   let main, editor, hub, consumer, bars, providers, StatusBarView;
   const tiles = (bar) =>
@@ -9,7 +10,7 @@ describe("Encoding selector status lifetime", () => {
     main = (await lumine.packages.activatePackage("encoding-selector")).mainModule;
     editor = await lumine.workspace.open();
     hub = new lumine.packages.serviceHub.constructor();
-    consumer = hub.consume("status-bar", "^1.0.0", (bar) => main.consumeStatusBar(bar));
+    consumer = hub.consume("status-bar", "^2.0.0", (bar) => main.consumeStatusBar(bar));
     bars = [];
     providers = [];
   });
@@ -25,7 +26,7 @@ describe("Encoding selector status lifetime", () => {
       bars.push(bar);
       jasmine.attachToDOM(bar.element);
     }
-    const provider = hub.provide("status-bar", "1.0.0", bar);
+    const provider = hub.provide("status-bar", "2.0.0", windowService(bar));
     providers.push(provider);
     return { bar, provider };
   }
