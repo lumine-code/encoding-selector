@@ -1,11 +1,25 @@
 {
   "menu": [
     {
-      "label": "Edit",
+      "label": "File",
       "submenu": [
         {
-          "label": "Select Encoding",
+          "label": "Select Encoding…",
           "command": "encoding-selector:show"
+        }
+      ]
+    },
+    {
+      "label": "Packages",
+      "submenu": [
+        {
+          "label": "Encoding Selector",
+          "submenu": [
+            {
+              "label": "Select Encoding…",
+              "command": "encoding-selector:show"
+            }
+          ]
         }
       ]
     }
