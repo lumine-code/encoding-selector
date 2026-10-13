@@ -2,9 +2,10 @@
   "title": "encoding-selector",
   "description": "Choose a text encoding.",
   "recordedOn": "2026-10-13",
-  "sourceRevision": "75dfb18cc02de5cb58b250c9cd93d12a8f42b778",
+  "sourceRevision": "de17686478245d2b55db0f5d6fafcd3a71c78643",
   "mode": "normal",
   "fontSettings": "default",
+  "themeSourceRevision": "6564a9e21899b5541e9c8f8006f9be6d6d72e6ad",
   "images": [
     {
       "file": "demo.png",
