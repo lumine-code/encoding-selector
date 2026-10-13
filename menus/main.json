@@ -5,7 +5,9 @@
       "submenu": [
         {
           "label": "Select Encoding…",
-          "command": "encoding-selector:show"
+          "command": "encoding-selector:show",
+          "group": "properties",
+          "order": 10
         }
       ]
     },
