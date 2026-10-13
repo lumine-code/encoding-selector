@@ -12,7 +12,26 @@ describe("encoding-selector status action menu", () => {
     await lumine.views.getNextUpdatePromise();
   });
   afterEach(async () => {
+    await lumine.workspace.discardEditorWindows();
     await lumine.packages.deactivatePackage("encoding-selector");
+  });
+
+  it("shows the owned encoding shortcut and suppresses it without a file editor", async () => {
+    const element = tile();
+    const menu = lumine.contextMenu.templateForElement(element);
+    const label = process.platform === "darwin" ? "⌃⇧U" : "Ctrl+Shift+U";
+    expect(menu[0].keyBindingLabel).toBe(label);
+    const popup = lumine.contextMenu.show(element, menu);
+    try {
+      expect(popup.element.querySelector(".menu-item-keystroke").textContent).toBe(label);
+    } finally {
+      popup.close();
+    }
+    await lumine.workspace.open({
+      getTitle: () => "Preview",
+      element: document.createElement("div"),
+    });
+    expect(lumine.contextMenu.templateForElement(element)[0].keyBindingLabel).toBe("");
   });
 
   it("offers the primary mouse action and ignores right button clicks", () => {
@@ -47,5 +66,41 @@ describe("encoding-selector status action menu", () => {
     expect(lumine.contextMenu.templateForElement(tile())[0].enabled).toBe(false);
     editor.isEncodingReadOnly = () => false;
     expect(lumine.contextMenu.templateForElement(tile())[0].enabled).toBe(true);
+  });
+
+  it("looks up the backing file's shortcut in its own window, including detached editors", async () => {
+    const extra = await lumine.workspace.openEditorWindow({ show: false });
+    const file = lumine.workspace.buildTextEditor();
+    const cell = lumine.workspace.buildTextEditor();
+    file.getElement().setAttribute("data-menu-owner", "file");
+    cell.getElement().setAttribute("data-menu-owner", "cell");
+    const host = extra.getDocument().createElement("div");
+    host.getFileTextEditor = () => file;
+    host.getActiveEmbeddedTextEditor = () => cell;
+    host.onDidChangeActiveTextEditors = () => ({ dispose() {} });
+    host.append(cell.getElement());
+    extra.getEditorContainer().getActivePane().activateItem(host, { activatePane: true });
+    const keys = lumine.keymaps.add(
+      "encoding-status-file-owner-spec",
+      {
+        'lumine-text-editor[data-menu-owner="file"]': { "ctrl-alt-1": "encoding-selector:show" },
+        'lumine-text-editor[data-menu-owner="cell"]': { "ctrl-alt-2": "encoding-selector:show" },
+      },
+      100,
+    );
+    try {
+      const remote = extra.getElement().querySelector(".encoding-status");
+      expect(lumine.contextMenu.templateForElement(remote)[0].keyBindingLabel).toBe(
+        process.platform === "darwin" ? "⌃⌥1" : "Ctrl+Alt+1",
+      );
+      expect(lumine.contextMenu.templateForElement(tile())[0].keyBindingLabel).toBe(
+        process.platform === "darwin" ? "⌃⇧U" : "Ctrl+Shift+U",
+      );
+    } finally {
+      keys.dispose();
+      await extra.getEditorContainer().getActivePane().destroyItem(host, true);
+      cell.destroy();
+      file.destroy();
+    }
   });
 });
