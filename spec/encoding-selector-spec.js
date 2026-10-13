@@ -399,14 +399,15 @@ describe("EncodingSelector", () => {
         utf8: { list: "UTF-8" },
         utf16le: { list: "UTF-16 LE" },
       });
-      let finishRead;
-      spyOn(fs.promises, "readFile").and.returnValue(
-        new Promise((resolve) => {
-          finishRead = resolve;
-        }),
-      );
+      let finishRead, beginRead;
+      const started = new Promise((resolve) => (beginRead = resolve));
+      spyOn(fs.promises, "readFile").and.callFake(() => {
+        beginRead();
+        return new Promise((resolve) => (finishRead = resolve));
+      });
       try {
         const detection = list.detectEncoding(editor);
+        await started;
         list.editor = editor;
         list.useEncoding({ id: "utf16le" });
         finishRead(Buffer.from("plain ASCII"));
