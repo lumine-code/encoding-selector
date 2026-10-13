@@ -12,6 +12,8 @@ Fork of [pulsar-edit/pulsar](https://github.com/pulsar-edit/pulsar) (`packages/e
 - **Status bar tile**: shows the active encoding and opens the picker when clicked.
 - **Format-aware files**: keeps a fixed encoding visible but disables changing it when the file editor declares its encoding read-only.
 
+![Choose a text encoding.](.github/demo.png)
+
 ## Installation
 
 To install `encoding-selector` search for it in the Install pane of the Lumine settings, or run the command `lumine --install lumine-code/encoding-selector`.

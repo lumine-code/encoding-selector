@@ -1,0 +1,16 @@
+{
+  "title": "encoding-selector",
+  "description": "Choose a text encoding.",
+  "recordedOn": "2026-10-13",
+  "sourceRevision": "75dfb18cc02de5cb58b250c9cd93d12a8f42b778",
+  "mode": "normal",
+  "fontSettings": "default",
+  "images": [
+    {
+      "file": "demo.png",
+      "label": "Choose a text encoding.",
+      "width": 1100,
+      "height": 720
+    }
+  ]
+}
