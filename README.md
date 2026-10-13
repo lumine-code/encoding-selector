@@ -24,7 +24,7 @@ Commands available in `lumine-workspace`:
 
 The picker keeps the editor it opened for and closes when that editor is destroyed.
 
-Click the encoding tile to open the encoding picker, or right-click it to select the same action from its context menu. The menu action is disabled when the file format requires its current encoding.
+Left-click the encoding tile to open the encoding picker, or right-click it to choose the same action from its context menu. The action is disabled when the file format requires its current encoding.
 
 ## Services
 
