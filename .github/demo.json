@@ -1,17 +1,61 @@
 {
   "title": "encoding-selector",
   "description": "Choose a text encoding.",
-  "recordedOn": "2026-10-13",
-  "sourceRevision": "de17686478245d2b55db0f5d6fafcd3a71c78643",
+  "recordedOn": "2026-10-14",
+  "sourceRevision": "488f9891398336352139f122e20571ea82cbdd4b",
+  "themeSourceRevision": "14a69683b0e3238e2bc128fbfae3866c1e4ee9c6",
   "mode": "normal",
   "fontSettings": "default",
-  "themeSourceRevision": "6564a9e21899b5541e9c8f8006f9be6d6d72e6ad",
+  "scenario": "demo.js",
+  "recipeHash": "387989a0363d1ac226d6cdb8d95976c93faf78081e44f64b32d670f8207a231a",
+  "environment": {
+    "platform": "win32",
+    "arch": "x64",
+    "electron": "44.7.0",
+    "chrome": "152.0.7977.130",
+    "devicePixelRatio": 1,
+    "locale": "en-GB",
+    "fontFamily": "Fira Code, Menlo, DejaVu Sans Mono, Consolas, monospace",
+    "fontSize": 14,
+    "themes": ["one-day-syntax", "one-day-ui"]
+  },
+  "viewport": { "width": 1100, "height": 720 },
+  "cornerRadius": 10,
+  "sources": {
+    "editor": {
+      "revision": "385bd1b3ac2db600f1c7e077474d9da4d6deebc4",
+      "dirty": true,
+      "workingTreeHash": "0fa935626a1db13861a0b78ef5c3d890e0a6bff80b25da2fac6e9889910defe0"
+    },
+    "package": {
+      "revision": "488f9891398336352139f122e20571ea82cbdd4b",
+      "dirty": true,
+      "workingTreeHash": "e10fd51b85fb9b792ab382522318dcfcc2bdefa8f098934f2292f7555eff81b9"
+    },
+    "encoding-selector": {
+      "revision": "488f9891398336352139f122e20571ea82cbdd4b",
+      "dirty": true,
+      "workingTreeHash": "e10fd51b85fb9b792ab382522318dcfcc2bdefa8f098934f2292f7555eff81b9"
+    },
+    "one-theme": {
+      "revision": "14a69683b0e3238e2bc128fbfae3866c1e4ee9c6",
+      "dirty": true,
+      "workingTreeHash": "50ec2f83a6347dd8113870992ec4eb2be4014f3d9e12213c2f51b543f1eca793"
+    }
+  },
+  "fixtures": [
+    {
+      "file": "signal.js",
+      "sha256": "2a36953daadd1ae53070d0ff7ceab4624395fdb957104aa6e8ec92d785cadf1d"
+    }
+  ],
   "images": [
     {
       "file": "demo.png",
       "label": "Choose a text encoding.",
       "width": 1100,
-      "height": 720
+      "height": 720,
+      "sha256": "c7d7d12e178cb48f7855efe8d66cc3da1425a188714759faa35a76b9dfa3cc29"
     }
   ]
 }
