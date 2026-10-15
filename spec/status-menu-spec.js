@@ -19,7 +19,7 @@ describe("encoding-selector status action menu", () => {
   it("shows the owned encoding shortcut and suppresses it without a file editor", async () => {
     const element = tile();
     const menu = lumine.contextMenu.templateForElement(element);
-    const label = process.platform === "darwin" ? "⌃⇧U" : "Ctrl+Shift+U";
+    const label = process.platform === "darwin" ? "⇧⌘U" : "Ctrl+Shift+U";
     expect(menu[0].keyBindingLabel).toBe(label);
     const popup = lumine.contextMenu.show(element, menu);
     try {
@@ -94,7 +94,7 @@ describe("encoding-selector status action menu", () => {
         process.platform === "darwin" ? "⌃⌥1" : "Ctrl+Alt+1",
       );
       expect(lumine.contextMenu.templateForElement(tile())[0].keyBindingLabel).toBe(
-        process.platform === "darwin" ? "⌃⇧U" : "Ctrl+Shift+U",
+        process.platform === "darwin" ? "⇧⌘U" : "Ctrl+Shift+U",
       );
     } finally {
       keys.dispose();
