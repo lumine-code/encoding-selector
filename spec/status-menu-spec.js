@@ -10,6 +10,7 @@ describe("encoding-selector status action menu", () => {
     editor.setText("first\nsecond\n");
     await conditionPromise(() => tile() && tile().style.display !== "none");
     await lumine.views.getNextUpdatePromise();
+    editor.getElement().focus();
   });
   afterEach(async () => {
     await lumine.workspace.discardEditorWindows();
@@ -27,11 +28,14 @@ describe("encoding-selector status action menu", () => {
     } finally {
       popup.close();
     }
+    const preview = document.createElement("div");
+    preview.tabIndex = -1;
     await lumine.workspace.open({
       getTitle: () => "Preview",
-      element: document.createElement("div"),
+      element: preview,
     });
-    expect(lumine.contextMenu.templateForElement(element)[0].keyBindingLabel).toBe("");
+    preview.focus();
+    expect(lumine.contextMenu.templateForElement(element)[0].keyBindingLabel).toBeUndefined();
   });
 
   it("offers the primary mouse action and ignores right button clicks", () => {
@@ -68,7 +72,7 @@ describe("encoding-selector status action menu", () => {
     expect(lumine.contextMenu.templateForElement(tile())[0].enabled).toBe(true);
   });
 
-  it("looks up the backing file's shortcut in its own window, including detached editors", async () => {
+  it("uses the focused cell's shortcut while the command still operates on its backing file", async () => {
     const extra = await lumine.workspace.openEditorWindow({ show: false });
     const file = lumine.workspace.buildTextEditor();
     const cell = lumine.workspace.buildTextEditor();
@@ -89,10 +93,12 @@ describe("encoding-selector status action menu", () => {
       100,
     );
     try {
+      cell.getElement().focus();
       const remote = extra.getElement().querySelector(".encoding-status");
       expect(lumine.contextMenu.templateForElement(remote)[0].keyBindingLabel).toBe(
-        process.platform === "darwin" ? "⌃⌥1" : "Ctrl+Alt+1",
+        process.platform === "darwin" ? "⌃⌥2" : "Ctrl+Alt+2",
       );
+      editor.getElement().focus();
       expect(lumine.contextMenu.templateForElement(tile())[0].keyBindingLabel).toBe(
         process.platform === "darwin" ? "⇧⌘U" : "Ctrl+Shift+U",
       );
