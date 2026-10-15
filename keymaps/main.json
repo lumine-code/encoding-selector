@@ -2,6 +2,6 @@
   // :not([mini]) because it changes the file's encoding, and a mini editor has
   // no file of its own to change.
   "lumine-text-editor:not([mini])": {
-    "ctrl-shift-u": "encoding-selector:show"
+    "cmdorctrl-shift-u": "encoding-selector:show"
   }
 }
