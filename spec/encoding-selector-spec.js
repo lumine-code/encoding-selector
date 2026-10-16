@@ -203,15 +203,15 @@ describe("EncodingSelector", () => {
       await view.selectItemById("utf8");
       await view.confirmSelection();
       const main = lumine.packages.getActivePackage("encoding-selector").mainModule;
-      const saved = main.serialize();
-      main.restoreState({});
+      const saved = main.serializeSessionState();
+      main.restoreSessionState({});
       view = await openPicker();
       expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("detect");
       lumine.workspace
         .getModalPanels()
         .find((panel) => panel.isVisible())
         .hide();
-      main.restoreState(saved);
+      main.restoreSessionState(saved);
       view = await openPicker();
       expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("utf8");
       expect(view.getElement().querySelector("li.auto-selected")).toBeNull();
@@ -274,7 +274,9 @@ describe("EncodingSelector", () => {
 
     it("restores the automatic choice from serialized package state", async () => {
       await chooseAuto();
-      const state = lumine.packages.getActivePackage("encoding-selector").mainModule.serialize();
+      const state = lumine.packages
+        .getActivePackage("encoding-selector")
+        .mainModule.serializeSessionState();
       const EncodingListView = require("../lib/encoding-list-view");
       const restored = new EncodingListView({ utf8: { list: "UTF-8" } }, state.automaticEncodings);
       try {
@@ -339,8 +341,8 @@ describe("EncodingSelector", () => {
     it("replaces the Auto choice when an active package restores project state", async () => {
       await chooseAuto();
       const main = lumine.packages.getActivePackage("encoding-selector").mainModule;
-      const saved = main.serialize();
-      main.restoreState({
+      const saved = main.serializeSessionState();
+      main.restoreSessionState({
         manualEncodings: [{ bufferId: editor.getBuffer().getId(), encoding: "utf8" }],
       });
       let view = await openPicker();
@@ -349,7 +351,7 @@ describe("EncodingSelector", () => {
         .getModalPanels()
         .find((panel) => panel.isVisible())
         .hide();
-      main.restoreState(saved);
+      main.restoreSessionState(saved);
       view = await openPicker();
       expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("detect");
       expect(view.getElement().querySelector("li.auto-selected").dataset.encoding).toBe("utf8");
@@ -357,17 +359,19 @@ describe("EncodingSelector", () => {
 
     it("observes restored Auto choices before the picker has been created", async () => {
       await chooseAuto();
-      const saved = lumine.packages.getActivePackage("encoding-selector").mainModule.serialize();
+      const saved = lumine.packages
+        .getActivePackage("encoding-selector")
+        .mainModule.serializeSessionState();
       await lumine.packages.deactivatePackage("encoding-selector");
       await lumine.packages.activatePackage("encoding-selector");
       const main = lumine.packages.getActivePackage("encoding-selector").mainModule;
-      main.restoreState(saved);
+      main.restoreSessionState(saved);
       editor.setEncoding("utf16le");
       editor.setEncoding("utf8");
       const view = await openPicker();
       expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("utf8");
       expect(view.getElement().querySelector("li.auto-selected")).toBeNull();
-      expect(main.serialize().automaticEncodings).toEqual([]);
+      expect(main.serializeSessionState().automaticEncodings).toEqual([]);
     });
 
     it("allows a manual fallback after detecting the file fails", async () => {
@@ -384,7 +388,7 @@ describe("EncodingSelector", () => {
       await view.confirmSelection();
       expect(editor.getEncoding()).toBe("utf16le");
       expect(
-        lumine.packages.getActivePackage("encoding-selector").mainModule.serialize()
+        lumine.packages.getActivePackage("encoding-selector").mainModule.serializeSessionState()
           .automaticEncodings,
       ).toEqual([]);
     });
