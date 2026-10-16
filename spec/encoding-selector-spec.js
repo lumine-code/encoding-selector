@@ -65,16 +65,13 @@ describe("EncodingSelector", () => {
       expect(view.getElement().querySelector(".select-list-separator")).toBeNull();
     });
 
-    it("reports a format-owned encoding instead of opening the picker", async () => {
+    it("declines a format-owned encoding silently instead of opening the picker", async () => {
       editor.isEncodingReadOnly = () => true;
       spyOn(lumine.notifications, "addInfo");
 
-      lumine.commands.dispatch(editor.getElement(), "encoding-selector:show");
-      await lumine.views.getNextUpdatePromise();
+      expect(lumine.commands.dispatch(editor.getElement(), "encoding-selector:show")).toBeNull();
 
-      expect(lumine.notifications.addInfo).toHaveBeenCalledWith(
-        "This file format requires UTF-8 encoding.",
-      );
+      expect(lumine.notifications.addInfo).not.toHaveBeenCalled();
       expect(lumine.workspace.getModalPanels().length).toBe(0);
     });
   });
