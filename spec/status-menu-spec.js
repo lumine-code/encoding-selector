@@ -71,6 +71,24 @@ describe("encoding-selector status action menu", () => {
     editor.isEncodingReadOnly = () => false;
     expect(lumine.contextMenu.templateForElement(tile())[0].enabled).toBe(true);
   });
+  it("validates the saved focus's file instead of the active split's file", async () => {
+    const firstPane = lumine.workspace.paneForItem(editor);
+    firstPane.splitRight();
+    const other = await lumine.workspace.open();
+    other.isEncodingReadOnly = () => true;
+    try {
+      expect(lumine.workspace.getActiveFileTextEditor()).toBe(other);
+      const menu = () =>
+        lumine.contextMenu.templateForEvent({ target: tile() }, { focusTarget: editor.element });
+      expect(lumine.workspace.resolveCommandContext(editor.element).fileEditor).toBe(editor);
+      expect(menu()[0].enabled).toBe(true);
+      editor.isEncodingReadOnly = () => true;
+      other.isEncodingReadOnly = () => false;
+      expect(menu()[0].enabled).toBe(false);
+    } finally {
+      other.destroy();
+    }
+  });
 
   it("uses the focused cell's shortcut while the command still operates on its backing file", async () => {
     const extra = await lumine.workspace.openEditorWindow({ show: false });
