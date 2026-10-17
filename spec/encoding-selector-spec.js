@@ -138,14 +138,23 @@ describe("EncodingSelector", () => {
     }
 
     it("offers Auto in an unsaved file and restores the configured default without reading disk", async () => {
+      const sourcePath = editor.getPath();
       editor = await lumine.workspace.open("");
       editor.setEncoding("utf16le");
       const picker = await openPicker();
       await picker.selectItemById("detect");
       const fs = require("fs");
       const read = spyOn(fs.promises, "readFile").and.callThrough();
+      const EncodingListView = require("../lib/encoding-list-view");
+      const detector = spyOn(EncodingListView.prototype, "loadDetector").and.callThrough();
       await picker.confirmSelection();
-      expect(read).withContext(JSON.stringify(read.calls.allArgs())).not.toHaveBeenCalled();
+      expect(detector).not.toHaveBeenCalled();
+      // Repository watchers may read Git metadata while the action completes;
+      // neither the unsaved buffer nor the file it replaced is detector input.
+      const inputReads = read.calls
+        .allArgs()
+        .filter(([file]) => file === sourcePath || file == null);
+      expect(inputReads).withContext(JSON.stringify(inputReads)).toEqual([]);
       expect(editor.getEncoding()).toBe("utf8");
       const view = await openPicker();
       expect(view.getElement().querySelector("li.active").dataset.encoding).toBe("detect");

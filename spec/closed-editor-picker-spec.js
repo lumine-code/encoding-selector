@@ -40,4 +40,23 @@ describe("Encoding Selector visible picker ownership", () => {
       other.destroy();
     }
   });
+
+  it("keeps applying encoding choices to its captured editor while open", async () => {
+    await model.runAction("select-list:toggle-keep-open");
+    const other = await lumine.workspace.open();
+    try {
+      for (const encoding of ["utf16le", "utf8"]) {
+        await model.selectItemById(encoding);
+        await model.confirmSelection();
+        expect(editor.getEncoding()).toBe(encoding);
+        expect(other.getEncoding()).toBe("utf8");
+        expect(panel.isVisible()).toBe(true);
+        expect(model.getElement().querySelector("li.active").dataset.encoding).toBe(encoding);
+      }
+      editor.destroy();
+      expect(panel.isVisible()).toBe(false);
+    } finally {
+      other.destroy();
+    }
+  });
 });
