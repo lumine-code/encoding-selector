@@ -1,9 +1,9 @@
 {
   "title": "encoding-selector",
   "description": "Choose a text encoding.",
-  "recordedOn": "2026-10-14",
-  "sourceRevision": "488f9891398336352139f122e20571ea82cbdd4b",
-  "themeSourceRevision": "14a69683b0e3238e2bc128fbfae3866c1e4ee9c6",
+  "recordedOn": "2026-10-18",
+  "sourceRevision": "e3c7015cf7339aac8cda83b8fe415db8825b50ed",
+  "themeSourceRevision": "45b22049e87256e9327beb0b350e67fe81d7fc81",
   "mode": "normal",
   "fontSettings": "default",
   "scenario": "demo.js",
@@ -11,8 +11,8 @@
   "environment": {
     "platform": "win32",
     "arch": "x64",
-    "electron": "44.7.0",
-    "chrome": "152.0.7977.130",
+    "electron": "44.9.0",
+    "chrome": "152.0.7977.167",
     "devicePixelRatio": 1,
     "locale": "en-GB",
     "fontFamily": "Fira Code, Menlo, DejaVu Sans Mono, Consolas, monospace",
@@ -21,26 +21,27 @@
   },
   "viewport": { "width": 1100, "height": 720 },
   "cornerRadius": 10,
+  "privacy": { "version": 1, "location": "neutral", "textChecked": true },
   "sources": {
     "editor": {
-      "revision": "385bd1b3ac2db600f1c7e077474d9da4d6deebc4",
-      "dirty": true,
-      "workingTreeHash": "0fa935626a1db13861a0b78ef5c3d890e0a6bff80b25da2fac6e9889910defe0"
+      "revision": "10950c83cb6d964aadbcf4036af67c6484c1341d",
+      "dirty": false,
+      "workingTreeHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
     },
     "package": {
-      "revision": "488f9891398336352139f122e20571ea82cbdd4b",
-      "dirty": true,
-      "workingTreeHash": "e10fd51b85fb9b792ab382522318dcfcc2bdefa8f098934f2292f7555eff81b9"
+      "revision": "e3c7015cf7339aac8cda83b8fe415db8825b50ed",
+      "dirty": false,
+      "workingTreeHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
     },
     "encoding-selector": {
-      "revision": "488f9891398336352139f122e20571ea82cbdd4b",
-      "dirty": true,
-      "workingTreeHash": "e10fd51b85fb9b792ab382522318dcfcc2bdefa8f098934f2292f7555eff81b9"
+      "revision": "e3c7015cf7339aac8cda83b8fe415db8825b50ed",
+      "dirty": false,
+      "workingTreeHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
     },
     "one-theme": {
-      "revision": "14a69683b0e3238e2bc128fbfae3866c1e4ee9c6",
-      "dirty": true,
-      "workingTreeHash": "50ec2f83a6347dd8113870992ec4eb2be4014f3d9e12213c2f51b543f1eca793"
+      "revision": "45b22049e87256e9327beb0b350e67fe81d7fc81",
+      "dirty": false,
+      "workingTreeHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
     }
   },
   "fixtures": [
@@ -55,7 +56,7 @@
       "label": "Choose a text encoding.",
       "width": 1100,
       "height": 720,
-      "sha256": "c7d7d12e178cb48f7855efe8d66cc3da1425a188714759faa35a76b9dfa3cc29"
+      "sha256": "a95fe202257ba8ce7d941efd8c5cb3f05e7ffea85d26abacafd933a04645ea66"
     }
   ]
 }
