@@ -9,7 +9,7 @@
             {
               "label": "Encoding…",
               "command": "encoding-selector:show",
-              "group": "encoding",
+              "group": "format",
               "order": 10
             }
           ]
