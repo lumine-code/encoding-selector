@@ -4,10 +4,15 @@
       "label": "File",
       "submenu": [
         {
-          "label": "Select Encoding…",
-          "command": "encoding-selector:show",
-          "group": "properties",
-          "order": 10
+          "label": "File Properties",
+          "submenu": [
+            {
+              "label": "Encoding…",
+              "command": "encoding-selector:show",
+              "group": "encoding",
+              "order": 10
+            }
+          ]
         }
       ]
     },
