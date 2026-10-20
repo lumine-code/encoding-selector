@@ -59,8 +59,7 @@ describe("EncodingSelector", () => {
       await lumine.views.getNextUpdatePromise();
 
       const view = lumine.workspace.getModalPanels()[0].getItem();
-      view.getQueryEditor().setText("utf");
-      await lumine.views.getNextUpdatePromise();
+      await view.setQuery("utf");
 
       expect(view.getElement().querySelector(".select-list-separator")).toBeNull();
     });
@@ -328,8 +327,7 @@ describe("EncodingSelector", () => {
     it("restores Auto selection when reopening after a search", async () => {
       await chooseAuto();
       let view = await openPicker();
-      view.getQueryEditor().setText("utf16");
-      await lumine.views.getNextUpdatePromise();
+      await view.setQuery("utf16");
       lumine.workspace
         .getModalPanels()
         .find((panel) => panel.isVisible())
